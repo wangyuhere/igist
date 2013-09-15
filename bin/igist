@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'igist'
+
+IGist::CLI.new.run

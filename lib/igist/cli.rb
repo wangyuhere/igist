@@ -74,7 +74,7 @@ Options:
       puts ""
 
       @igist.authorize(username, password)
-      puts "Done!"
+      puts "Authorized!"
     end
 
     def index

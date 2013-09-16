@@ -10,6 +10,8 @@ IGist is a command line tool used to search your gists and starred gists by keyw
 
     $ gem install igist
 
+Note: ruby 1.9.3+ is required.
+
 ## Usage
 
 Before search your gists, authorize and index first:

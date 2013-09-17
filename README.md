@@ -2,6 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/igist.png)](http://badge.fury.io/rb/igist)
 [![Build Status](https://api.travis-ci.org/wangyuhere/igist.png?branch=master)](https://api.travis-ci.org/wangyuhere/igist.png?branch=master)
+[![Code Climate](https://codeclimate.com/github/wangyuhere/igist.png)](https://codeclimate.com/github/wangyuhere/igist.png)
 [![Dependency Status](https://gemnasium.com/wangyuhere/igist.png)](https://gemnasium.com/wangyuhere/igist)
 
 IGist is a command line tool used to search your gists and starred gists by keyword of gist description. All your gists will be indexed using simple inversed index algorithm. And the index data is saved locally (~/.igist).

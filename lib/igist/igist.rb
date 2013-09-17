@@ -62,16 +62,8 @@ module IGist
     def index
       @my_gists = {}
       @starred_gists = {}
-
-      api.each_my_gist { |g| @my_gists[g["id"]] = g["description"]}
-      api.each_starred_gist { |g| @starred_gists[g["id"]] = g["description"]}
-      write_json_file(my_gists, my_gists_file)
-      write_json_file(starred_gists, starred_gists_file)
-
-      @my_gists_index = build_index(my_gists)
-      @starred_gists_index = build_index(starred_gists)
-      write_json_file(my_gists_index, my_gists_index_file)
-      write_json_file(starred_gists_index, starred_gists_index_file)
+      save_gists_data
+      save_gists_index
     end
 
     def search(keyword)
@@ -87,6 +79,20 @@ module IGist
     end
 
     private
+
+    def save_gists_data
+      api.each_my_gist { |g| @my_gists[g["id"]] = g["description"]}
+      api.each_starred_gist { |g| @starred_gists[g["id"]] = g["description"]}
+      write_json_file(my_gists, my_gists_file)
+      write_json_file(starred_gists, starred_gists_file)
+    end
+
+    def save_gists_index
+      @my_gists_index = build_index(my_gists)
+      @starred_gists_index = build_index(starred_gists)
+      write_json_file(my_gists_index, my_gists_index_file)
+      write_json_file(starred_gists_index, starred_gists_index_file)
+    end
 
     def read_json_file(file)
       if File.exists?(file)

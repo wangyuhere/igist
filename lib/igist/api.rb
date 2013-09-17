@@ -12,32 +12,16 @@ module IGist
     end
 
     def create_authorization(username, password)
-      request = Net::HTTP::Post.new(authorization_url)
-      request.body = JSON.dump({
-        scopes: [:gist],
-        note: "The igist gem",
-        note_url: ""
-      })
-      request.content_type = "application/json"
-      request.basic_auth(username, password)
+      request = authorization_request(username, password)
       response = send_request(request)
+      response = send_otp(request) if response.is_a?(Net::HTTPUnauthorized) && response["X-GitHub-OTP"]
 
-      if response.is_a?(Net::HTTPUnauthorized) && response["X-GitHub-OTP"]
-        print "two factor authentication code: "
-        otp = $stdin.gets.strip
-        puts ""
-        request["X-GitHub-OTP"] = otp
-        response = send_request(request)
-      end
+      raise "Can not authorize because: #{response.body}" unless response.is_a?(Net::HTTPCreated)
 
-      if response.is_a?(Net::HTTPCreated)
-        result = JSON.parse(response.body)
-        @token = result["token"]
-        @username = username
-        yield result if block_given?
-      else
-        raise "Can not authorize because: #{response.body}"
-      end
+      result = JSON.parse(response.body)
+      @token = result["token"]
+      @username = username
+      yield result if block_given?
     end
 
     def each_my_gist(&block)
@@ -49,6 +33,26 @@ module IGist
     end
 
     private
+
+    def authorization_request(username, password)
+      request = Net::HTTP::Post.new(authorization_url)
+      request.body = JSON.dump({
+        scopes: [:gist],
+        note: "The igist gem",
+        note_url: ""
+      })
+      request.content_type = "application/json"
+      request.basic_auth(username, password)
+      request
+    end
+
+    def send_otp(request)
+      print "two factor authentication code: "
+      otp = $stdin.gets.strip
+      puts ""
+      request["X-GitHub-OTP"] = otp
+      send_request(request)
+    end
 
     def each_gist(url, &block)
       request = Net::HTTP::Get.new(url)

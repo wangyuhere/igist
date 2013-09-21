@@ -32,6 +32,14 @@ module IGist
       each_gist(starred_gists_url, &block)
     end
 
+    def single_gist(id)
+      request = Net::HTTP::Get.new(single_gist_url(id))
+      response = send_request(request)
+
+      raise "Can not get single gist because: #{response.body}" unless response.is_a?(Net::HTTPOK)
+      JSON.parse(response.body)
+    end
+
     private
 
     def authorization_request(username, password)
@@ -95,15 +103,19 @@ module IGist
     end
 
     def gists_url
-      append_token "#{api_url}/users/#{@username}/gists"
+      build_url "/users/#{@username}/gists"
     end
 
     def starred_gists_url
-      append_token "#{api_url}/gists/starred"
+      build_url "/gists/starred"
     end
 
-    def append_token(url)
-      "#{url}?access_token=#{@token}"
+    def single_gist_url(id)
+      build_url "/gists/#{id}"
+    end
+
+    def build_url(uri)
+      "#{api_url}#{uri}?access_token=#{@token}"
     end
 
   end

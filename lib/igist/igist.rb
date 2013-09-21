@@ -74,6 +74,10 @@ module IGist
       search_index(starred_gists_index, keyword).map { |id| {id: id, description: starred_gists[id]} }
     end
 
+    def single_gist(id)
+      api.single_gist(id)
+    end
+
     def clear
       File.delete(my_gists_file, my_gists_index_file, starred_gists_file, starred_gists_index_file)
     end

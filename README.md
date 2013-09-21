@@ -24,6 +24,10 @@ Search by keywords in description
     $ igist -s ruby
     $ igist -s "ruby rails"
 
+Print a single gist by id
+
+    $ igist -p 1
+
 For other options
 
     $ igist -h

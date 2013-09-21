@@ -1,4 +1,5 @@
 require "io/console"
+require "open-uri"
 require "optparse"
 require "igist/version"
 require "igist/igist"
@@ -23,6 +24,7 @@ You can also "igist -i -s KEYWORD" to first index and then search.
 
 Usage: igist [-i|-u|-v]
        igist [-t|-a] -s KEYWORD
+       igist -p ID
 
 Options:
         EOS
@@ -49,6 +51,10 @@ Options:
 
         opt.on("-a", "--all", "Both your gists and starred gists") do
           options[:all] = true
+        end
+
+        opt.on("-p", "--print ID", "Print gist content by gist id") do |id|
+          print_gist(id)
         end
 
         opt.on("--clear", "Remove your gists index data locally") do
@@ -96,12 +102,27 @@ Options:
       end
     end
 
+    def print_gist(id)
+      gist = @igist.single_gist(id)
+      gist['files'].each_pair { |file, data| print_gist_file(file, data) }
+    end
+
     def clear
       @igist.clear
       puts "Your local index files are deleted!"
     end
 
     private
+
+    def print_gist_file(file, data)
+      len = file.size
+      puts
+      puts "*" * len
+      puts file
+      puts "*" * len
+      puts
+      puts open(data["raw_url"]).read
+    end
 
     def print_result(title, result)
       puts "#{title}: "

@@ -31,14 +31,17 @@ Options:
 
         opt.on("-v", "--version", "Show version") do
           puts VERSION
+          exit
         end
 
         opt.on("-i", "--index", "Index your gists") do
           index
+          exit
         end
 
         opt.on("-u", "--auth", "Authorize igist") do
           authorize
+          exit
         end
 
         opt.on("-s", "--search KEYWORD", "Search your own gists by keyword in description") do |keyword|
@@ -55,10 +58,17 @@ Options:
 
         opt.on("-p", "--print ID", "Print gist content by gist id") do |id|
           print_gist(id)
+          exit
+        end
+
+        opt.on("-o", "--open ID", "Open gist in the browser") do |id|
+          open_gist(id)
+          exit
         end
 
         opt.on("--clear", "Remove your gists index data locally") do
           clear
+          exit
         end
 
       end
@@ -105,6 +115,16 @@ Options:
     def print_gist(id)
       gist = @igist.single_gist(id)
       gist['files'].each_pair { |file, data| print_gist_file(file, data) }
+    rescue => e
+      puts e.message
+    end
+
+    def open_gist(id)
+      gist = @igist.single_gist(id)
+      command = RUBY_PLATFORM =~ /darwin/ ? 'open' : 'firefox'
+      `#{command} #{gist["html_url"]}`
+    rescue => e
+      puts e.message
     end
 
     def clear

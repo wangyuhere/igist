@@ -28,6 +28,10 @@ Print a single gist by id
 
     $ igist -p 1
 
+Open a single gist in the browser by gist id
+
+    $ igist -o 1
+
 For other options
 
     $ igist -h
